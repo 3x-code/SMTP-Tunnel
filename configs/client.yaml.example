@@ -1,0 +1,40 @@
+# SMTP-Tunnel Client Configuration
+# https://github.com/3x-code/SMTP-Tunnel
+
+server:
+  host: your-server.3x-code.ir
+  port: 587
+  fallback_ports:
+    - 465
+    - 2525
+    - 8443
+
+auth:
+  username: your_username_here
+  secret: your_secret_key_here
+
+socks:
+  host: 127.0.0.1
+  port: 1080
+
+bypass:
+  # ISP: mci, mtn, rightel, auto
+  isp: auto
+  
+  # Strategy: aggressive, balanced, paranoid
+  strategy: balanced
+  
+  # Techniques
+  port_hopping: true
+  sni_fronting: true
+  multipath: false
+  fragmentation: false
+  dummy_traffic: true
+  
+  # Timing (milliseconds)
+  min_delay: 50
+  max_delay: 500
+
+logging:
+  level: info  # debug, info, warn, error
+  file: /var/log/smtp-tunnel/client.log
