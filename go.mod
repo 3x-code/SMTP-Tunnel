@@ -1,4 +1,4 @@
-module github.com/YOUR_USERNAME/smtp-tunnel-iran
+module github.com/3x-code/SMTP-Tunnel
 
 go 1.21
 
