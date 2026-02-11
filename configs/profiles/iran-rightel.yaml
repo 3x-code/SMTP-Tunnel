@@ -1,0 +1,24 @@
+# Iran Rightel Optimized Profile
+name: "iran-rightel"
+isp: "rightel"
+description: "Optimized for Rightel - Aggressive DPI, maximum stealth"
+
+bypass:
+  strategy: paranoid
+  port_hopping: true
+  sni_fronting: true
+  multipath: true
+  fragmentation: true
+  dummy_traffic: true
+  packet_delay: true
+  
+  min_delay: 150
+  max_delay: 1000
+  
+  mtu: 1300
+  tcp_window: 16384
+  keepalive: 20
+  
+  # Rightel specific
+  randomize_pattern: true
+  protocol_switch_gradual: true
