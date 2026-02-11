@@ -1,0 +1,19 @@
+# Iran MCI (Hamrah Aval) Optimized Profile
+name: "iran-mci"
+isp: "mci"
+description: "Optimized for MCI - Heavy DPI, maximum stealth"
+
+bypass:
+  strategy: paranoid
+  port_hopping: true
+  sni_fronting: true
+  multipath: true
+  fragmentation: true
+  dummy_traffic: true
+  
+  min_delay: 100
+  max_delay: 800
+  
+  mtu: 1400
+  tcp_window: 32768
+  keepalive: 25
