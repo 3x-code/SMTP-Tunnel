@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  smtp-tunnel-client:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.client
+    image: ghcr.io/3x-code/smtp-tunnel-client:latest
+    container_name: smtp-tunnel-client
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - SERVER_HOST=your-server.com
+      - SERVER_PORT=587
+      - USERNAME=your-username
+      - SECRET=your-secret
+      - ISP=mci
+    ports:
+      - "1080:1080"
+    cap_add:
+      - NET_ADMIN
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
