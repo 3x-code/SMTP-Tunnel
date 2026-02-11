@@ -1,4 +1,3 @@
-cat > cmd/client/main.go << 'EOF'
 package main
 
 import (
@@ -123,7 +122,7 @@ func runInteractiveWizard() {
 	servers := map[string]string{
 		"1": "istanbul.smtp-tunnel.3x-code.ir:587",
 		"2": "yerevan.smtp-tunnel.3x-code.ir:587",
-		"3": "baku.smtp-tunnel.3x-code.ir:587", 
+		"3": "baku.smtp-tunnel.3x-code.ir:587",
 		"4": "frankfurt.smtp-tunnel.3x-code.ir:587",
 		"5": "paris.smtp-tunnel.3x-code.ir:587",
 		"6": "london.smtp-tunnel.3x-code.ir:587",
@@ -153,17 +152,17 @@ func runInteractiveWizard() {
 	color.Yellow(strings.Repeat("─", 50))
 	
 	fmt.Println()
-	fmt.Println("  Enable port hopping? (Recommended for Iran) [Y/n]: ")
+	fmt.Print("  Enable port hopping? (Recommended for Iran) [Y/n]: ")
 	portHopping, _ := reader.ReadString('\n')
 	portHopping = strings.ToLower(strings.TrimSpace(portHopping))
 	portHoppingEnabled := portHopping != "n"
 	
-	fmt.Println("  Enable SNI fronting? (Bypasses SNI filter) [Y/n]: ")
+	fmt.Print("  Enable SNI fronting? (Bypasses SNI filter) [Y/n]: ")
 	sniFronting, _ := reader.ReadString('\n')
 	sniFronting = strings.ToLower(strings.TrimSpace(sniFronting))
 	sniFrontingEnabled := sniFronting != "n"
 	
-	fmt.Println("  Enable multipath tunneling? (Better reliability) [y/N]: ")
+	fmt.Print("  Enable multipath tunneling? (Better reliability) [y/N]: ")
 	multipath, _ := reader.ReadString('\n')
 	multipath = strings.ToLower(strings.TrimSpace(multipath))
 	multipathEnabled := multipath == "y"
@@ -211,4 +210,3 @@ func runInteractiveWizard() {
 	color.Yellow("\n\n👋 Shutting down tunnel...")
 	color.Green("✓ Goodbye!")
 }
-EOF
