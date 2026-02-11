@@ -1,0 +1,19 @@
+# Iran MTN (Irancell) Optimized Profile
+name: "iran-mtn"
+isp: "mtn"
+description: "Optimized for MTN - Moderate DPI, balanced approach"
+
+bypass:
+  strategy: balanced
+  port_hopping: true
+  sni_fronting: true
+  multipath: false
+  fragmentation: false
+  dummy_traffic: true
+  
+  min_delay: 50
+  max_delay: 400
+  
+  mtu: 1450
+  tcp_window: 65535
+  keepalive: 30
