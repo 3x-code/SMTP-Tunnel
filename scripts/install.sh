@@ -1,3 +1,6 @@
+cd ~/SMTP-Tunnel
+
+# Create the proper install.sh without the cat/EOF wrapper
 cat > scripts/install.sh << 'EOF'
 #!/bin/bash
 # SMTP-Tunnel - Iran DPI Bypass Installer
@@ -24,13 +27,13 @@ echo -e "${BLUE}═════════════════════�
 detect_platform() {
     OS=$(uname -s | tr '[:upper:]' '[:lower:]')
     ARCH=$(uname -m)
-    
+
     case $ARCH in
         x86_64)  ARCH="amd64" ;;
         aarch64) ARCH="arm64" ;;
         armv7l)  ARCH="armv7" ;;
     esac
-    
+
     case $OS in
         linux)  echo "linux_${ARCH}" ;;
         darwin) echo "darwin_${ARCH}" ;;
@@ -50,26 +53,23 @@ main() {
     echo -e "${YELLOW}📱 Detecting platform...${NC}"
     PLATFORM=$(detect_platform)
     echo -e "${GREEN}✓ Platform: ${PLATFORM}${NC}"
-    
+
     if [ "$VERSION" = "latest" ]; then
         echo -e "${YELLOW}📦 Fetching latest version...${NC}"
         VERSION=$(get_latest_version)
     fi
     echo -e "${GREEN}✓ Version: ${VERSION}${NC}"
-    
+
     # Create temp directory
     TMP_DIR=$(mktemp -d)
     cd "$TMP_DIR"
-    
+
     # Download the release
     URL="https://github.com/${REPO}/releases/download/${VERSION}/smtp-tunnel-${VERSION}-${PLATFORM}.tar.gz"
     echo -e "${YELLOW}⬇️ Downloading: ${URL}${NC}"
-    
+
     if curl -L -o smtp-tunnel.tar.gz "$URL"; then
-        # Extract
         tar xzf smtp-tunnel.tar.gz
-        
-        # Find and copy the binary (FIXED: looks for smtp-tunnel, not smtp-tunnel-*)
         if [ -f "smtp-tunnel" ]; then
             sudo cp smtp-tunnel "${INSTALL_DIR}/smtp-tunnel"
             sudo chmod +x "${INSTALL_DIR}/smtp-tunnel"
@@ -82,19 +82,24 @@ main() {
         echo -e "${RED}❌ Download failed${NC}"
         exit 1
     fi
-    
+
     # Create config directory
     sudo mkdir -p /etc/smtp-tunnel
     sudo mkdir -p /var/log/smtp-tunnel
-    
+
     # Cleanup
     cd /
     rm -rf "$TMP_DIR"
-    
+
     echo -e "${GREEN}✅ Installation complete!${NC}"
     echo ""
     echo -e "📋 Next steps:"
     echo -e "  1. Run: ${GREEN}smtp-tunnel --interactive${NC}"
     echo -e "  2. Follow the setup wizard"
 }
+
+main "$@"
 EOF
+
+# Make it executable
+chmod +x scripts/install.sh
