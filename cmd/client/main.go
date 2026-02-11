@@ -1,4 +1,3 @@
-cat > cmd/client/main.go << 'EOF'
 package main
 
 import (
@@ -37,4 +36,3 @@ func main() {
 	fmt.Println("  smtp-tunnel-client --interactive")
 	fmt.Println("  smtp-tunnel-client --version")
 }
-EOF
