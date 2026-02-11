@@ -12,8 +12,8 @@ import (
 var version = "dev"
 
 func main() {
-	versionFlag := flag.Bool("version", false, "Show version")
-	interactiveFlag := flag.Bool("interactive", false, "Run interactive mode")
+	versionFlag := flag.Bool("version", false, "Show version information")
+	interactiveFlag := flag.Bool("interactive", false, "Run interactive setup wizard")
 	flag.Parse()
 
 	if *versionFlag {
@@ -32,8 +32,7 @@ func main() {
 
 	fmt.Println("SMTP-Tunnel Client - Iran DPI Bypass System")
 	fmt.Println("\nUsage:")
-	fmt.Println("  --interactive    Run interactive setup wizard")
-	fmt.Println("  --version        Show version information")
+	flag.PrintDefaults()
 	fmt.Println("\nExamples:")
 	fmt.Println("  smtp-tunnel-client --interactive")
 	fmt.Println("  smtp-tunnel-client --version")
