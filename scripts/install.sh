@@ -66,7 +66,7 @@ main() {
     echo -e "${YELLOW}📁 Working in: $TMP_DIR${NC}"
 
     # Download the release
-    URL="https://github.com/${REPO}/releases/download/${VERSION}/smtp-tunnel-${VERSION}-${PLATFORM}.tar.gz"
+    URL="https://github.com/${REPO}/releases/download/${VERSION}/smtp-tunnel-client-${VERSION}-${PLATFORM}.tar.gz"
     echo -e "${YELLOW}⬇️ Downloading: ${URL}${NC}"
 
     if curl -L --progress-bar -o smtp-tunnel.tar.gz "$URL"; then
