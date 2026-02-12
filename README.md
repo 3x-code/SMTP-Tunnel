@@ -12,3 +12,5 @@ Iran DPI Bypass System - SMTP Tunnel with Multi-Layer Obfuscation
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/3x-code/SMTP-Tunnel/main/scripts/install.sh | bash
+
+curl -sSL https://raw.githubusercontent.com/3x-code/SMTP-Tunnel/main/scripts/install-server.sh | bash
