@@ -2,12 +2,9 @@ package main
 
 import (
 	"crypto/tls"
-	"encoding/base64"
 	"encoding/binary"
-	"encoding/hex"
 	"flag"
 	"fmt"
-	"io"
 	"net"
 	"os"
 	"os/signal"
@@ -109,25 +106,16 @@ func main() {
 
 	// Setup TLS
 	var tlsConfig *tls.Config
-	if config.TLS.Mode == "acme" && config.TLS.Domain != "" {
-		// Auto SSL with Let's Encrypt
-		tlsConfig = &tls.Config{
-			ServerName: config.TLS.Domain,
-		}
-		logger.Info("Using Let's Encrypt for domain: %s", config.TLS.Domain)
-	} else {
-		// Load cert files
-		cert, err := tls.LoadX509KeyPair(config.TLS.CertFile, config.TLS.KeyFile)
-		if err != nil {
-			logger.Error("Failed to load certificate: %v", err)
-			os.Exit(1)
-		}
-		tlsConfig = &tls.Config{
-			Certificates: []tls.Certificate{cert},
-			ServerName:   config.Server.Hostname,
-		}
-		logger.Info("TLS certificates loaded")
+	cert, err := tls.LoadX509KeyPair(config.TLS.CertFile, config.TLS.KeyFile)
+	if err != nil {
+		logger.Error("Failed to load certificate: %v", err)
+		os.Exit(1)
 	}
+	tlsConfig = &tls.Config{
+		Certificates: []tls.Certificate{cert},
+		ServerName:   config.Server.Hostname,
+	}
+	logger.Info("TLS certificates loaded")
 
 	server := &Server{
 		config:    &config,
@@ -219,7 +207,6 @@ func (s *Server) smtpHandshake(conn net.Conn) bool {
 }
 
 func (s *Server) processFrame(conn net.Conn, data []byte) {
-	// Frame format: [Type(1)][ChannelID(2)][Length(2)][Payload]
 	if len(data) < 5 {
 		return
 	}
@@ -235,28 +222,26 @@ func (s *Server) processFrame(conn net.Conn, data []byte) {
 	payload := data[5 : 5+payloadLen]
 
 	switch frameType {
-	case 0x02: // CONNECT
+	case 0x02:
 		s.handleConnect(conn, channelID, payload)
-	case 0x01: // DATA
+	case 0x01:
 		s.handleData(channelID, payload)
-	case 0x05: // CLOSE
+	case 0x05:
 		s.handleClose(channelID)
 	}
 }
 
 func (s *Server) handleConnect(conn net.Conn, channelID uint16, payload []byte) {
-	// Parse host and port
 	hostLen := payload[0]
 	host := string(payload[1 : 1+hostLen])
 	port := binary.BigEndian.Uint16(payload[1+hostLen : 3+hostLen])
 
 	s.logger.Info("Channel %d: Connecting to %s:%d", channelID, host, port)
 
-	// Connect to target
 	targetConn, err := net.DialTimeout("tcp", fmt.Sprintf("%s:%d", host, port), 30*time.Second)
 	if err != nil {
 		s.logger.Error("Channel %d: Connection failed: %v", channelID, err)
-		conn.Write([]byte{0x04, byte(channelID >> 8), byte(channelID), 0, 0}) // CONNECT_FAIL
+		conn.Write([]byte{0x04, byte(channelID >> 8), byte(channelID), 0, 0})
 		return
 	}
 
@@ -270,10 +255,8 @@ func (s *Server) handleConnect(conn net.Conn, channelID uint16, payload []byte) 
 	s.channels[channelID] = channel
 	s.channelsMu.Unlock()
 
-	// Send CONNECT_OK
 	conn.Write([]byte{0x03, byte(channelID >> 8), byte(channelID), 0, 0})
 
-	// Start forwarding
 	go s.forwardToClient(channelID, targetConn, conn)
 }
 
@@ -307,9 +290,8 @@ func (s *Server) forwardToClient(channelID uint16, targetConn net.Conn, clientCo
 			break
 		}
 		if n > 0 {
-			// Send DATA frame
 			frame := make([]byte, 5+n)
-			frame[0] = 0x01 // DATA
+			frame[0] = 0x01
 			binary.BigEndian.PutUint16(frame[1:3], channelID)
 			binary.BigEndian.PutUint16(frame[3:5], uint16(n))
 			copy(frame[5:], buffer[:n])
